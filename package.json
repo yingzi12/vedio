@@ -16,6 +16,7 @@
     "vue-router": "^4.2.5"
   },
   "dependencies": {
+    "@libsql/client": "^0.3.6",
     "postinstall": "^0.8.0",
     "sqlite3": "^5.1.6",
     "video.js": "^8.6.1"
