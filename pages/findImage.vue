@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import {reactive, ref, toRefs} from "vue";
 import { useQuasar } from 'quasar'
-const $q = useQuasar()
 const data = reactive({
     form: {
         title:"",
@@ -12,7 +11,7 @@ const data = reactive({
 const { form, } = toRefs(data);
 async  function  onSubmit(){
     if(form.value.title == undefined || form.value.title == null || form.value.title.trim() == '' || form.value.title.trim().length ==0 ){
-        $q.dialog({
+        useQuasar().dialog({
             title: '信息',
             message: '必须填写图集名称.'
         }).onOk(() => {
@@ -51,8 +50,8 @@ async function getList() {
 }
 async function handleAdd(id:number){
     const { data } = await useFetch('/api/findImage/list?id='+id.toString())
-    if(data.value.code === 200){
-        $q.dialog({
+    if(data && data.value && data.value.code === 200) {
+        useQuasar().dialog({
             title: '信息',
             message: '提交成功,等待管理员处理中.'
         })
