@@ -9,7 +9,6 @@ export default defineEventHandler(async (event) => {
     // console.log(dataJson.data)
     return {
         code:dataJson.code,
-        message: dataJson.message,
         data: dataJson.data,
     };
 });

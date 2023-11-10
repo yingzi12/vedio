@@ -27,24 +27,39 @@ function getValueWithDefault(key:string) {
     }
 }
 const imageList= ref([])
-const isDisable = ref(false)
+const disableInfiniteScroll = ref(false)
 const isRefreshing = ref(false)
 const onLoad = async (index: number, done: () => void) => {
+    // console.log('onLoad:', onLoad);
     try {
         isRefreshing.value = true
         const {data} = await useFetch('/api/image/list?aid=' + aid.value + '&pageNum=' + index)
-        if (data.value.code === 200) {
+        // if (data.value.code === 200) {
+         if(data && data.value && data.value.code === 200) {
             const imgList = data.value.data
-            console.log('Before push:', imageList.value);
+             if(imgList.length ==0){
+                 disableInfiniteScroll.value=true
+             }
+            // console.log('Before push:', imageList.value);
             imageList.value.push(...imgList);
-            console.log('After push:', imageList.value);
+            // console.log('After push:', imageList.value);
             isRefreshing.value = false;
-            done();
-        }
+
+         } done();
+        // else{
+        //     console.log("dddddddddddddddddddddddddddd")
+        // }
+        // }else{
+        //     isDisable.value = true
+        // }
 
     } catch (error) {
-        isDisable.value = true
+        console.log('eeeeeeeeeeeeeeeeeeeeeeeeeeeeerror:onLoad');
+        disableInfiniteScroll.value=true
+
+        // isDisable.value = true
     }
+
 }
 const album = ref({});
 
@@ -57,18 +72,8 @@ async function getInfo() {
 }
 async function handleImageError(){
     const {data} = await useFetch("/api/album/error?id=" +aid.value )
-    if (data.value.code === 200) {
-        $q.dialog({
-            title: '信息',
-            message: '提交成功,等待管理员处理中.'
-        }).onOk(() => {
-            // console.log('OK')
-        }).onCancel(() => {
-            // console.log('Cancel')
-        }).onDismiss(() => {
-            // console.log('I am triggered on both OK and Cancel')
-        })
-    }
+    console.log("error:"+JSON.stringify(data))
+    alert("提交成功,等待管理员处理中.")
 }
 getInfo()
 </script>
@@ -95,7 +100,7 @@ getInfo()
       </div>
     </div>
 <!--    内容页-->
-    <q-infinite-scroll @load="onLoad" :disable="isDisable" :offset="250">
+    <q-infinite-scroll @load="onLoad" :disable="disableInfiniteScroll"  :offset="250">
       <div v-for="(image, index) in imageList" :key="index" class="caption">
         <img :src="getValueWithDefault(image.sourceWeb) +image.url" class="responsive-image"/>
       </div>
