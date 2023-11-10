@@ -1,3 +1,68 @@
+<script setup lang="ts">
+import {reactive, ref, toRefs} from "vue";
+import { useQuasar } from 'quasar'
+const $q = useQuasar()
+const data = reactive({
+    form: {
+        title:"",
+        gril:"",
+        createTime:""
+    },
+});
+const { form, } = toRefs(data);
+async  function  onSubmit(){
+    if(form.value.title == undefined || form.value.title == null || form.value.title.trim() == '' || form.value.title.trim().length ==0 ){
+        $q.dialog({
+            title: '信息',
+            message: '必须填写图集名称.'
+        }).onOk(() => {
+            // console.log('OK')
+        }).onCancel(() => {
+            // console.log('Cancel')
+        }).onDismiss(() => {
+            // console.log('I am triggered on both OK and Cancel')
+        })
+        return;
+    }
+    const { error } = await useFetch("/api/findImage/add", {
+        method: "post",
+        body:form.value,
+    });
+    // api.post("findImage/add",form.value).then(response => {
+    //     $q.dialog({
+    //         title: '信息',
+    //         message: '提交成功,等待管理员处理中.'
+    //     }).onOk(() => {
+    //         // console.log('OK')
+    //     }).onCancel(() => {
+    //         // console.log('Cancel')
+    //     }).onDismiss(() => {
+    //         // console.log('I am triggered on both OK and Cancel')
+    //     })
+    //     getList()
+    // }) ;
+}
+const findImageList = ref([]);
+const total = ref(0);
+async function getList() {
+    const { data } = await useFetch('/api/findImage/list')
+    total.value=data.value.total
+    findImageList.value=data.value.data
+}
+async function handleAdd(id:number){
+    const { data } = await useFetch('/api/findImage/list?id='+id.toString())
+    if(data.value.code === 200){
+        $q.dialog({
+            title: '信息',
+            message: '提交成功,等待管理员处理中.'
+        })
+        getList()
+    }
+}
+
+
+getList()
+</script>
 <template>
     <q-page>
         <div style="width: 600px" class="caption">
@@ -73,94 +138,7 @@
     </q-page>
 </template>
 
-<script setup lang="ts">
-import {reactive, ref, toRefs} from "vue";
-import { useQuasar } from 'quasar'
-const $q = useQuasar()
-const data = reactive({
-    form: {
-        title:"",
-        gril:"",
-        createTime:""
-    },
-});
-const { form, } = toRefs(data);
-async  function  onSubmit(){
-    if(form.value.title == undefined || form.value.title == null || form.value.title.trim() == '' || form.value.title.trim().length ==0 ){
-        $q.dialog({
-            title: '信息',
-            message: '必须填写图集名称.'
-        }).onOk(() => {
-            // console.log('OK')
-        }).onCancel(() => {
-            // console.log('Cancel')
-        }).onDismiss(() => {
-            // console.log('I am triggered on both OK and Cancel')
-        })
-        return;
-    }
-    const { error } = await useFetch("/api/findImage/add", {
-        method: "post",
-        body:form.value,
-    });
-    // api.post("findImage/add",form.value).then(response => {
-    //     $q.dialog({
-    //         title: '信息',
-    //         message: '提交成功,等待管理员处理中.'
-    //     }).onOk(() => {
-    //         // console.log('OK')
-    //     }).onCancel(() => {
-    //         // console.log('Cancel')
-    //     }).onDismiss(() => {
-    //         // console.log('I am triggered on both OK and Cancel')
-    //     })
-    //     getList()
-    // }) ;
-}
-const findImageList = ref([]);
-const total = ref(0);
-async function getList() {
-    const { data } = await useFetch('/api/findImage/list')
-    total.value=data.value.total
-    findImageList.value=data.value.data
-    // // 滚动到顶部
-    // api.get("findImage/list").then(response => {
-    //     findImageList.value = response.data.data;
-    //     total.value = response.data.total;
-    // }) .catch(() => {
-    //     // console.log('OK')
-    // });
-}
-async function handleAdd(id:number){
-    const { data } = await useFetch('/api/findImage/list?id='+id.toString())
-    if(data.value.code === 200){
-        $q.dialog({
-                    title: '信息',
-                    message: '提交成功,等待管理员处理中.'
-                })
-        getList()
-    }
-    // total.value=data.value.total
-    // findImageList.value=data.value.data
 
-    // api.get("findImage/addFind?id="+id.toString()).then(response => {
-    //     $q.dialog({
-    //         title: '信息',
-    //         message: '提交成功,等待管理员处理中.'
-    //     }).onOk(() => {
-    //         // console.log('OK')
-    //     }).onCancel(() => {
-    //         // console.log('Cancel')
-    //     }).onDismiss(() => {
-    //         // console.log('I am triggered on both OK and Cancel')
-    //     })
-    //     getList()
-    // }) ;
-}
-
-
-getList()
-</script>
 <style  lang="sass"  scoped>
 .caption
   padding: 20px
