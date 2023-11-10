@@ -40,18 +40,7 @@ const onLoad = async (index: number, done: () => void) => {
             console.log('After push:', imageList.value);
             isRefreshing.value = false;
             done();
-            // if (imgList && imgList.length > 0) {
-            //     imageList.value.push(...imgList)
-            //     isRefreshing.value = false
-            //     done()
-            // }
         }
-        // console.log('Before push:', imageList.value);
-        // imageList.value.push(...imgList);
-        // console.log('After push:', imageList.value);
-        // isRefreshing.value = false;
-        // done();
-        //
 
     } catch (error) {
         isDisable.value = true
@@ -105,18 +94,10 @@ getInfo()
         <button  class="text-h6" @click="handleImageError()"> 报告异常</button>
       </div>
     </div>
-      <infinite-scroll
-              :offset="100"
-              @on-load="onLoad"
-      >
-          <div v-for="(item, index) in items" :key="index">
-              <img :src="getValueWithDefault(image.sourceWeb) +image.url" class="responsive-image"/>
-          </div>
-      </infinite-scroll>
 <!--    内容页-->
     <q-infinite-scroll @load="onLoad" :disable="isDisable" :offset="250">
       <div v-for="(image, index) in imageList" :key="index" class="caption">
-        <q-img :src="getValueWithDefault(image.sourceWeb) +image.url" class="responsive-image"/>
+        <img :src="getValueWithDefault(image.sourceWeb) +image.url" class="responsive-image"/>
       </div>
       <template v-slot:loading>
         <div class="row justify-center q-my-md">
