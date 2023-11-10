@@ -8,6 +8,14 @@ const data = reactive({
         createTime:""
     },
 });
+useHead({
+    title:"图集网",
+    meta: [
+        { name: 'description', content: "图集网 美女 写真 摄影 秀人网 Photo Gallery, Beauty, Photo, Photography, Showman.com." },
+        { name: 'title', content: "图集网" }
+
+    ],
+})
 const { form, } = toRefs(data);
 async  function  onSubmit(){
     if(form.value.title == undefined || form.value.title == null || form.value.title.trim() == '' || form.value.title.trim().length ==0 ){

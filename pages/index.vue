@@ -15,6 +15,14 @@ const queryData = reactive({
     rules: {
     }
 });
+useHead({
+    title:"图集网",
+    meta: [
+        { name: 'description', content: "图集网 美女 写真 摄影 秀人网 Photo Gallery, Beauty, Photo, Photography, Showman.com." },
+        { name: 'title', content: "图集网" }
+
+    ],
+})
 const image=ref("")
 const { queryParams, form, rules } = toRefs(queryData);
 async  function getList(page:number) {

@@ -3,7 +3,6 @@ import { ref,} from 'vue'
 import {useRoute} from "vue-router";
 import {useQuasar} from 'quasar'
 
-const $q = useQuasar()
 
 // 接收url里的参数
 const route = useRoute();
@@ -30,7 +29,6 @@ const imageList= ref([])
 const disableInfiniteScroll = ref(false)
 const isRefreshing = ref(false)
 const onLoad = async (index: number, done: () => void) => {
-    // console.log('onLoad:', onLoad);
     try {
         isRefreshing.value = true
         const {data} = await useFetch('/api/image/list?aid=' + aid.value + '&pageNum=' + index)
@@ -40,21 +38,12 @@ const onLoad = async (index: number, done: () => void) => {
              if(imgList.length ==0){
                  disableInfiniteScroll.value=true
              }
-            // console.log('Before push:', imageList.value);
             imageList.value.push(...imgList);
-            // console.log('After push:', imageList.value);
             isRefreshing.value = false;
 
          } done();
-        // else{
-        //     console.log("dddddddddddddddddddddddddddd")
-        // }
-        // }else{
-        //     isDisable.value = true
-        // }
 
     } catch (error) {
-        console.log('eeeeeeeeeeeeeeeeeeeeeeeeeeeeerror:onLoad');
         disableInfiniteScroll.value=true
 
         // isDisable.value = true
@@ -62,17 +51,38 @@ const onLoad = async (index: number, done: () => void) => {
 
 }
 const album = ref({});
+const  title=ref("图集网")
+
+const description = ref('图集网 美女 写真 摄影 秀人网 Photo Gallery, Beauty, Photo, Photography, Showman.com.')
+const  ortTile=ref("图集网")
+const  orgDec=ref("图集网")
+const  orgImgae=ref("图集网")
+
+useHead({
+    title:title,
+    meta: [
+        { name: 'description', content: description },
+        { name: 'title', content: title },
+        { name: 'og:title', content:  ortTile},
+        { name: 'og:description', content:  orgDec},
+        { name: 'og:image', content:  orgImgae}
+    ],
+})
 
 async function getInfo() {
     // 滚动到顶部
     const {data} = await useFetch("/api/album/info?id=" +aid.value )
     if (data.value.code === 200) {
         album.value = data.value.data;
+        title.value="图集网-"+album.value.title
+        ortTile.value=album.value.title
+        ortTile.orgDec=album.value.value.description
+        ortTile.orgImgae=album.value.sourceWeb+album.value.imgUrl
+
     }
 }
 async function handleImageError(){
     const {data} = await useFetch("/api/album/error?id=" +aid.value )
-    console.log("error:"+JSON.stringify(data))
     alert("提交成功,等待管理员处理中.")
 }
 getInfo()
