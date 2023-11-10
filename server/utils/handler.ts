@@ -18,3 +18,4 @@ export const defineWrappedResponseHandler = <T extends EventHandlerRequest, D> (
             return { err }
         }
     })
+
